@@ -11,16 +11,91 @@ Misc:Button("Bypass Anticheat | Beta", function()
 game:GetService("ReplicatedStorage").ItemShop.Lighter:SetAttribute('Price',5)
 end)
 
-ESP:Button("esp / Key", function()
+ESP:Toggle("DOOR / ESP",false, function(t)
 
+local function setup(room)
+            local door = room:WaitForChild("Door"):WaitForChild("Door")
+            
+            task.wait(0.1)
+            local h = esp(door,Color3.fromRGB(255,240,0),door,"Door")
+            table.insert(esptable.doors,h)
+            
+            door:WaitForChild("Open").Played:Connect(function()
+                h.delete()
+            end)
+            
+            door.AncestryChanged:Connect(function()
+                h.delete()
+            end)
+        end
+        
+        local addconnect
+        addconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            setup(room)
+        end)
+        
+        for i,room in pairs(workspace.CurrentRooms:GetChildren()) do
+            if room:FindFirstChild("Assets") then
+                setup(room) 
+            end
+        end
+        
+        repeat task.wait() until not flags.espdoors
+        addconnect:Disconnect()
+        
+        for i,v in pairs(esptable.doors) do
+            v.delete()
+        end 
+    end
+end)
 end)
 
-ESP:Button("esp / ", function()
-
-end)
-
-ESP:Button("esp / ", function()
-
+tab:Toggle("",false, function(t)
+print(t)
 end)
 
 
+
+
+
+local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
+
+local win = lib:Window("PREVIEW",Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
+
+local tab = win:Tab("Tab 1")
+
+tab:Button("Button", function()
+lib:Notification("Notification", "Hello!", "Hi!")
+end)
+
+tab:Toggle("Toggle",false, function(t)
+print(t)
+end)
+
+tab:Slider("Slider",0,100,30, function(t)
+print(t)
+end)
+
+tab:Dropdown("Dropdown",{"Option 1","Option 2","Option 3","Option 4","Option 5"}, function(t)
+print(t)
+end)
+
+tab:Colorpicker("Colorpicker",Color3.fromRGB(255,0,0), function(t)
+print(t)
+end)
+
+tab:Textbox("Textbox",true, function(t)
+print(t)
+end)
+
+tab:Bind("Bind",Enum.KeyCode.RightShift, function()
+print("Pressed!")
+end)
+
+tab:Label("Label")
+
+local changeclr = win:Tab("Change UI Color")
+
+changeclr:Colorpicker("Change UI Color",Color3.fromRGB(44, 120, 224), function(t)
+lib:ChangePresetColor(Color3.fromRGB(t.R * 255, t.G * 255, t.B * 255))
+end)
