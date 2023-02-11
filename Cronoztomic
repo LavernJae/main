@@ -360,3 +360,20 @@ local function personesp(v)
     end
 end)
 end)
+
+Misc:Toggle("Disable Seek Chase",false, function(v)
+
+local addconnect
+        addconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            local trigger = room:WaitForChild("TriggerEventCollision",2)
+            
+            if trigger then
+                trigger:Destroy() 
+            end
+        end)
+        
+        repeat task.wait() until not flags.noseek
+        addconnect:Disconnect()
+    end
+end)
+end)
