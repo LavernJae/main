@@ -50,7 +50,7 @@ local function setup(room)
 end)
 end)
 
-tab:Toggle("key/lever | esp",false, function(v)
+ESP:Toggle("key/lever | esp",false, function(v)
 
 local function check(v)
             if v:IsA("Model") and (v.Name == "LeverForGate" or v.Name == "KeyObtain") then
@@ -107,7 +107,7 @@ local function check(v)
 end)
 end)
 
-tab:Toggle("item | esp",false, function(v)
+ESP:Toggle("item | esp",false, function(v)
 
 local function check(v)
             if v:IsA("Model") and (v:GetAttribute("Pickup") or v:GetAttribute("PropType")) then
@@ -160,7 +160,7 @@ local function check(v)
 end)
 end)
 
-tab:Toggle("Book/Breaker | esp",false, function(v)
+ESP:Toggle("Book/Breaker | esp",false, function(v)
 
 local function check(v)
             if v:IsA("Model") and (v.Name == "LiveHintBook" or v.Name == "LiveBreakerPolePickup") then
@@ -206,4 +206,62 @@ local function check(v)
         end 
     end
 end)
+end)
+
+ESP:Toggle("Locker | esp",false, function(v)
+
+local function check(v)
+            if v:IsA("Model") then
+                task.wait(0.1)
+                if v.Name == "Wardrobe" then
+                    local h = esp(v.PrimaryPart,Color3.fromRGB(145,100,25),v.PrimaryPart,"Closet")
+                    table.insert(esptable.lockers,h) 
+                elseif (v.Name == "Rooms_Locker" or v.Name == "Rooms_Locker_Fridge") then
+                    local h = esp(v.PrimaryPart,Color3.fromRGB(145,100,25),v.PrimaryPart,"Locker")
+                    table.insert(esptable.lockers,h) 
+                end
+            end
+        end
+        
+        local function setup(room)
+            local assets = room:WaitForChild("Assets")
+            
+            if assets then
+                local subaddcon
+                subaddcon = assets.DescendantAdded:Connect(function(v)
+                    check(v) 
+                end)
+                
+                for i,v in pairs(assets:GetDescendants()) do
+                    check(v)
+                end
+                
+                task.spawn(function()
+                    repeat task.wait() until not flags.esplocker
+                    subaddcon:Disconnect()  
+                end) 
+            end 
+        end
+        
+        local addconnect
+        addconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            setup(room)
+        end)
+        
+        for i,v in pairs(workspace.CurrentRooms:GetChildren()) do
+            setup(room) 
+        end
+        
+        repeat task.wait() until not flags.esplocker
+        addconnect:Disconnect()
+        
+        for i,v in pairs(esptable.lockers) do
+            v.delete()
+        end 
+    end
+end)
+end)
+
+ESP:Toggle("Taa",false, function(v)
+print(t)
 end)
