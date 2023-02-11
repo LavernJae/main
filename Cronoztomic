@@ -1,0 +1,26 @@
+local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
+
+local win = lib:Window("CronozTomic HuB | 👁️ Doors",Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
+
+local Main = win:Tab("Main")
+local Misc = win:Tab("Misc")
+local ESP = win:Tab("ESP")
+
+Misc:Label("-to bypass anticheat must be on 1 player mode / execute the script and Buy Lighter must have 50 coins below")
+Misc:Button("Bypass Anticheat | Beta", function()
+game:GetService("ReplicatedStorage").ItemShop.Lighter:SetAttribute('Price',5)
+end)
+
+ESP:Button("esp / Key", function()
+
+end)
+
+ESP:Button("esp / ", function()
+
+end)
+
+ESP:Button("esp / ", function()
+
+end)
+
+
