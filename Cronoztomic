@@ -377,3 +377,16 @@ local addconnect
     end
 end)
 end)
+
+Misc:Toggle("Harmless Screech",false, function(v)
+
+local screechremote = entityinfo:FindFirstChild("Screech")
+
+if screechremote then
+screechremote.Parent = nil
+            repeat task.wait()
+            screechremote.Parent = entityinfo
+        end
+    end)
+end
+end)
