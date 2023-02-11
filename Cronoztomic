@@ -160,52 +160,50 @@ local function check(v)
 end)
 end)
 
-tab:Toggle("Book/Breaker | esp",false, function(t)
-print(t)
+tab:Toggle("Book/Breaker | esp",false, function(v)
+
+local function check(v)
+            if v:IsA("Model") and (v.Name == "LiveHintBook" or v.Name == "LiveBreakerPolePickup") then
+                task.wait(0.1)
+                
+                local h = esp(v,Color3.fromRGB(160,190,255),v.PrimaryPart,"Book")
+                table.insert(esptable.books,h)
+                
+                v.AncestryChanged:Connect(function()
+                    if not v:IsDescendantOf(room) then
+                        h.delete() 
+                    end
+                end)
+            end
+        end
+        
+        local function setup(room)
+            if room.Name == "50" or room.Name == "100" then
+                room.DescendantAdded:Connect(function(v)
+                    check(v) 
+                end)
+                
+                for i,v in pairs(room:GetDescendants()) do
+                    check(v)
+                end
+            end
+        end
+        
+        local addconnect
+        addconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            setup(room)
+        end)
+        
+        for i,room in pairs(workspace.CurrentRooms:GetChildren()) do
+            setup(room) 
+        end
+        
+        repeat task.wait() until not flags.espbooks
+        addconnect:Disconnect()
+        
+        for i,v in pairs(esptable.books) do
+            v.delete()
+        end 
+    end
 end)
-
-
-
-
-
-local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
-
-local win = lib:Window("PREVIEW",Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
-
-local tab = win:Tab("Tab 1")
-
-tab:Button("Button", function()
-lib:Notification("Notification", "Hello!", "Hi!")
-end)
-
-tab:Toggle("Toggle",false, function(t)
-print(t)
-end)
-
-tab:Slider("Slider",0,100,30, function(t)
-print(t)
-end)
-
-tab:Dropdown("Dropdown",{"Option 1","Option 2","Option 3","Option 4","Option 5"}, function(t)
-print(t)
-end)
-
-tab:Colorpicker("Colorpicker",Color3.fromRGB(255,0,0), function(t)
-print(t)
-end)
-
-tab:Textbox("Textbox",true, function(t)
-print(t)
-end)
-
-tab:Bind("Bind",Enum.KeyCode.RightShift, function()
-print("Pressed!")
-end)
-
-tab:Label("Label")
-
-local changeclr = win:Tab("Change UI Color")
-
-changeclr:Colorpicker("Change UI Color",Color3.fromRGB(44, 120, 224), function(t)
-lib:ChangePresetColor(Color3.fromRGB(t.R * 255, t.G * 255, t.B * 255))
 end)
