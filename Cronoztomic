@@ -11,7 +11,7 @@ Misc:Button("Bypass Anticheat | Beta", function()
 game:GetService("ReplicatedStorage").ItemShop.Lighter:SetAttribute('Price',5)
 end)
 
-ESP:Toggle("DOOR | ESP",false, function(t)
+ESP:Toggle("DOOR | ESP",false, function(v)
 
 local function setup(room)
             local door = room:WaitForChild("Door"):WaitForChild("Door")
@@ -50,7 +50,7 @@ local function setup(room)
 end)
 end)
 
-tab:Toggle("key/lever | esp",false, function(t)
+tab:Toggle("key/lever | esp",false, function(v)
 
 local function check(v)
             if v:IsA("Model") and (v.Name == "LeverForGate" or v.Name == "KeyObtain") then
@@ -107,11 +107,60 @@ local function check(v)
 end)
 end)
 
-tab:Toggle("Toggle",false, function(t)
-print(t)
+tab:Toggle("item | esp",false, function(v)
+
+local function check(v)
+            if v:IsA("Model") and (v:GetAttribute("Pickup") or v:GetAttribute("PropType")) then
+                task.wait(0.1)
+                
+                local part = (v:FindFirstChild("Handle") or v:FindFirstChild("Prop"))
+                local h = esp(part,Color3.fromRGB(160,190,255),part,v.Name)
+                table.insert(esptable.items,h)
+            end
+        end
+        
+        local function setup(room)
+            local assets = room:WaitForChild("Assets")
+            
+            if assets then  
+                local subaddcon
+                subaddcon = assets.DescendantAdded:Connect(function(v)
+                    check(v) 
+                end)
+                
+                for i,v in pairs(assets:GetDescendants()) do
+                    check(v)
+                end
+                
+                task.spawn(function()
+                    repeat task.wait() until not flags.espitems
+                    subaddcon:Disconnect()  
+                end) 
+            end 
+        end
+        
+        local addconnect
+        addconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            setup(room)
+        end)
+        
+        for i,room in pairs(workspace.CurrentRooms:GetChildren()) do
+            if room:FindFirstChild("Assets") then
+                setup(room) 
+            end
+        end
+        
+        repeat task.wait() until not flags.espitems
+        addconnect:Disconnect()
+        
+        for i,v in pairs(esptable.items) do
+            v.delete()
+        end 
+    end
+end)
 end)
 
-tab:Toggle("Toggle",false, function(t)
+tab:Toggle("Book/Breaker | esp",false, function(t)
 print(t)
 end)
 
